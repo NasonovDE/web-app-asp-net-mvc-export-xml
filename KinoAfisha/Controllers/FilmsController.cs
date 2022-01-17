@@ -13,6 +13,7 @@ namespace KinoAfisha.Controllers
 {
     public class FilmsController : Controller
     {
+       
         [HttpGet]
         public ActionResult Index()
         {
@@ -57,8 +58,11 @@ namespace KinoAfisha.Controllers
                     FileName = model.FilmCoverFile.FileName
                 };
             }
+
            
-            
+
+
+
             db.Films.Add(model);
             db.SaveChanges();
 
@@ -99,6 +103,9 @@ namespace KinoAfisha.Controllers
             if (film == null)
                 ModelState.AddModelError("Id", "Фильм не найден");
 
+
+            
+
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -115,6 +122,7 @@ namespace KinoAfisha.Controllers
           
             destination.NameFilm = sourse.NameFilm;
             destination.FilmYears = sourse.FilmYears;
+           
 
             if (destination.Formats != null)
                 destination.Formats.Clear();
@@ -189,6 +197,17 @@ namespace KinoAfisha.Controllers
             }
 
             return View(uploadedFiles);
+        }
+
+        [HttpGet]
+        public ActionResult Detail(int id)
+        {
+            var db = new KinoAfishaContext();
+            var kino = db.Films.FirstOrDefault(x => x.Id == id);
+            if (kino == null)
+                return RedirectPermanent("/Films/Index");
+
+            return View(kino);
         }
     }
 

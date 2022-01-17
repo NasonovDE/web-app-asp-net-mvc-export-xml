@@ -68,11 +68,7 @@ namespace KinoAfisha.Models
         [NotMapped]
         public HttpPostedFileBase FilmCoverFile { get; set; }
 
-        /// <summary>
-        /// Расписание кино
-        /// </summary> 
-        [ScaffoldColumn(false)]
-        public virtual ICollection<Kino> Kinos{ get; set; }
+      
 
         /// <summary>
         /// Формат
@@ -106,7 +102,19 @@ namespace KinoAfisha.Models
             }
         }
 
+
+  
+
+
+
+        /// <summary>
+        /// Расписание кино
+        /// </summary> 
+        [ScaffoldColumn(false)]
+        public virtual ICollection<Kino> Kinos { get; set; }
+
     }
+
 }
 
       

@@ -10,9 +10,9 @@
 
             @Html.ValidationSummary();
             @Html.EditorForModel()
-            <input type="submit" value="Сохранить" />
-            <button>
-                @Html.ActionLink("Отменить", "Index", "Kinos")
-            </button>
+            <input type="submit" value="Сохранить"class = "btn btn-success" />
+            
+                @Html.ActionLink("Отменить", "Index", "Kinos", null, new { @class = "btn btn-danger" })
+            
         }
     </fieldset>

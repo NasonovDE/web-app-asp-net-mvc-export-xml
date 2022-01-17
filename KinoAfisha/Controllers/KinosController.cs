@@ -4,6 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using KinoAfisha.Models;
+using KinoAfisha.Models.Xml;
+using System.Collections.Generic;
+using System.Xml.Serialization;
+using System.Xml.Linq;
+
+using System.Xml;
+
+
 
 
 namespace KinoAfisha.Controllers
@@ -35,8 +43,12 @@ namespace KinoAfisha.Controllers
                 return View(model);
 
             var db = new KinoAfishaContext();
-            model.CreateAt = DateTime.Now;
-            model.NextArrivalDate = DateTime.Now;
+
+           //model.KinoTime = DateTime.Now;
+           
+            //model.NextArrivalDate = DateTime.Now;
+           
+
             if (model.FilmIds != null && model.FilmIds.Any())
             {
                 var film = db.Films.Where(s => model.FilmIds.Contains(s.Id)).ToList();
@@ -56,7 +68,8 @@ namespace KinoAfisha.Controllers
 
             return RedirectPermanent("/Kinos/Index");
         }
-
+        
+         
         [HttpGet]
         public ActionResult Delete(int id)
         {
@@ -113,10 +126,11 @@ namespace KinoAfisha.Controllers
         {
 
             destination.Price = sourse.Price;
-            destination.NextArrivalDate = sourse.NextArrivalDate;
-            destination.KinoTime = sourse.KinoTime;
-            destination.DescriptionId = sourse.DescriptionId;
-            destination.Description = sourse.Description;
+            //destination.NextArrivalDate = sourse.NextArrivalDate;
+            destination.StringKinoTime = sourse.StringKinoTime;
+            destination.KinoDate = sourse.KinoDate;
+            destination.FilmIds = sourse.FilmIds;
+
 
 
 
@@ -146,5 +160,31 @@ namespace KinoAfisha.Controllers
             return View(kino);
         }
 
+
+        [HttpGet]
+        public ActionResult GetXml()
+        {
+            var db = new KinoAfishaContext();
+            var kinos = db.Kinos.ToList().Select(x => new XmlKino()
+            {
+                Price = (int)x.Price,
+                KinoDate = x.KinoDate,
+                KinoTime = x.StringKinoTime,
+                Cinemas = x.Cinemas.Select(y => new XmlCinema() { Id = y.Id }).ToList(),
+                Films = x.Films.Select(y => new XmlFilm() { Id = y.Id }).ToList(),
+
+               
+            }).ToList();
+
+
+
+            XmlSerializer xml = new XmlSerializer(typeof(List<XmlKino>));
+            var ns = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
+            var ms = new MemoryStream();
+            xml.Serialize(ms, kinos, ns);
+            ms.Position = 0;
+
+            return File(new MemoryStream(ms.ToArray()), "text/xml");
+        }
     }
 }
